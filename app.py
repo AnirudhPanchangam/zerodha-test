@@ -6,6 +6,10 @@ import redis
 import json
 from jinja2 import Environment, PackageLoader, select_autoescape
 from util_preprocess import PreProcess
+import logging
+import os 
+
+logger = logging.getLogger(__name__)
 
 class SearchStock(object):
     def __init__(self):
@@ -20,7 +24,7 @@ class SearchStock(object):
 
     @cherrypy.expose
     def index(self):
-        return self.env.get_template('index.html').render({"title":"test"})
+        return self.env.get_template('index.html').render({"title":"BhavCopySearch"})
 
     @cherrypy.expose
     def generate(self, length=8):
@@ -30,6 +34,7 @@ class SearchStock(object):
     @cherrypy.tools.json_out()
     def fetch(self, name="*", limit=None):
       name = name.upper()
+      print(name)
       name.lstrip()
       name.rstrip()
       li = []
@@ -54,4 +59,14 @@ class SearchStock(object):
       raise cherrypy.HTTPRedirect('/keys')
 
 if __name__ == '__main__':
-    cherrypy.quickstart(SearchStock())
+  conf = {
+        '/': {
+          'tools.staticdir.root': os.path.dirname(os.path.abspath(__file__))
+        },
+       '/static': {
+         "tools.staticdir.on": True,
+         "tools.staticdir.dir": "./static"
+       }
+      }
+
+  cherrypy.quickstart(SearchStock(), config=conf)
