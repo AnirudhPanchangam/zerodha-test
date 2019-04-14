@@ -85,10 +85,11 @@ class PreProcess(object):
         except Exception as e:
             logger.error(e)
 if __name__ == '__main__':
-    url = make_url()    
-    filename = download_file(url)
-    filename = unzip_file(filename)
-    update_redis(filename)
+    pp = PreProcess()
+    url = pp.make_url()    
+    filename = pp.download_file(url)
+    filename = pp.unzip_file(filename)
+    pp.update_redis(filename)
 
 
 
